@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-and-train:
+    name: Tests, full pipeline on the UCI data, accuracy gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Download the dataset from UCI (checked against a pinned SHA-256)
+        run: scripts/get_data.sh data
+      - name: Tests (synthetic data, real-data checks, browser calculator in Node)
+        run: pytest -q
+      - name: Full pipeline with accuracy gate
+        run: python scripts/run_pipeline.py --data data/diabetic_data.csv --out ci-results --site ci-site --min-auc 0.62
+      - name: Results match the committed ones
+        run: python scripts/check_results.py results/metrics.json ci-results/metrics.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: results
+          path: |
+            ci-results
+            ci-site
+      - uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: data/*.csv
+          retention-days: 1
