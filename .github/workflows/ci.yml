@@ -1,8 +1,12 @@
 name: CI
 on:
   push:
+    branches-ignore: [ci-output]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   test-and-train:
@@ -28,9 +32,15 @@ jobs:
           path: |
             ci-results
             ci-site
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: data
-          path: data/*.csv
-          retention-days: 1
+      - name: Publish outputs to the ci-output branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p /tmp/out && cp -r ci-results ci-site /tmp/out/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q --orphan ci-output
+          git rm -rfq .
+          cp -r /tmp/out/ci-results /tmp/out/ci-site .
+          git add ci-results ci-site
+          git commit -q -m "CI outputs for ${GITHUB_SHA}"
+          git push -q -f origin ci-output
