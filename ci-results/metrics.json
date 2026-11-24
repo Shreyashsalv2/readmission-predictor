@@ -1,0 +1,414 @@
+{
+ "dataset": "Diabetes 130-US Hospitals 1999-2008 (UCI id 296)",
+ "cleaning_steps": [
+  [
+   "raw encounters",
+   101766
+  ],
+  [
+   "drop unknown gender",
+   101763
+  ],
+  [
+   "drop expired / hospice discharges",
+   99340
+  ],
+  [
+   "keep first encounter per patient",
+   69987
+  ]
+ ],
+ "dropped_columns": {
+  "weight": "about 97% missing",
+  "payer_code": "about 40% missing and an insurance code, not a clinical signal",
+  "encounter_id": "identifier",
+  "patient_nbr": "identifier (used only to keep one encounter per patient)"
+ },
+ "dropped_constant": [
+  "examide",
+  "citoglipton",
+  "glimepiride-pioglitazone"
+ ],
+ "n_features": {
+  "numeric": 9,
+  "categorical": 33
+ },
+ "train_rows": 55989,
+ "test_rows": 13998,
+ "folds": 5,
+ "seed": 42,
+ "lr_c_sweep_cv_auc": {
+  "0.01": 0.6440846892015828,
+  "0.1": 0.6447682872257658,
+  "1.0": 0.6441777114071046
+ },
+ "lr_C": 0.1,
+ "models": {
+  "Baseline (always the average rate)": {
+   "cv_roc_auc_mean": 0.5,
+   "cv_roc_auc_std": 0.0,
+   "test": {
+    "roc_auc": 0.5,
+    "pr_auc": 0.08979854264894985,
+    "brier": 0.08173476441022588,
+    "log_loss": 0.30207147653614624,
+    "base_rate": 0.08979854264894985,
+    "mean_predicted": 0.08980335423029526
+   },
+   "top10": {
+    "fraction_flagged": 0.1,
+    "flagged": 1400,
+    "precision": 0.09142857142857143,
+    "recall": 0.10182975338106603,
+    "lift": 1.0181520627344016
+   }
+  },
+  "Logistic regression": {
+   "cv_roc_auc_mean": 0.6447682872257658,
+   "cv_roc_auc_std": 0.0038029377902578897,
+   "test": {
+    "roc_auc": 0.6483676967415875,
+    "pr_auc": 0.1687756654206668,
+    "brier": 0.07932568282516553,
+    "log_loss": 0.2894608854359902,
+    "base_rate": 0.08979854264894985,
+    "mean_predicted": 0.0893248053533602
+   },
+   "top10": {
+    "fraction_flagged": 0.1,
+    "flagged": 1400,
+    "precision": 0.21,
+    "recall": 0.23389021479713604,
+    "lift": 2.3385680190930787
+   },
+   "test_roc_auc_95ci": [
+    0.6334616823385882,
+    0.6641900974842317
+   ],
+   "calibration": {
+    "mean_predicted": [
+     0.04207064382676201,
+     0.05216666800465957,
+     0.058492586720811264,
+     0.06434493479726297,
+     0.07079781207814329,
+     0.07869573942495102,
+     0.08885770039530677,
+     0.10403105038111274,
+     0.1266923287312447,
+     0.20708041276226596
+    ],
+    "observed": [
+     0.03642857142857143,
+     0.05142857142857143,
+     0.06642857142857143,
+     0.053609721229449604,
+     0.075,
+     0.08571428571428572,
+     0.09220872051465333,
+     0.10142857142857142,
+     0.12571428571428572,
+     0.21
+    ]
+   }
+  },
+  "Gradient boosting": {
+   "cv_roc_auc_mean": 0.6545748845730095,
+   "cv_roc_auc_std": 0.006417766320864665,
+   "test": {
+    "roc_auc": 0.6541514914641416,
+    "pr_auc": 0.18647949733992403,
+    "brier": 0.0786821392869438,
+    "log_loss": 0.28752826072434934,
+    "base_rate": 0.08979854264894985,
+    "mean_predicted": 0.08928524131946812
+   },
+   "top10": {
+    "fraction_flagged": 0.1,
+    "flagged": 1400,
+    "precision": 0.21857142857142858,
+    "recall": 0.24343675417661098,
+    "lift": 2.4340197749744292
+   },
+   "test_roc_auc_95ci": [
+    0.638837848845931,
+    0.6701587296979188
+   ],
+   "calibration": {
+    "mean_predicted": [
+     0.037388806919277956,
+     0.048854358833115626,
+     0.0573324105542022,
+     0.06502518807727167,
+     0.07303140423816692,
+     0.08185157360196174,
+     0.09229971518919423,
+     0.106366901772421,
+     0.12702695678104037,
+     0.20365992181419237
+    ],
+    "observed": [
+     0.03428571428571429,
+     0.05857142857142857,
+     0.055,
+     0.0636168691922802,
+     0.07285714285714286,
+     0.07857142857142857,
+     0.08791994281629735,
+     0.09857142857142857,
+     0.13,
+     0.21857142857142858
+    ]
+   }
+  }
+ },
+ "best_model": "Gradient boosting",
+ "subgroups_best_model": {
+  "age": [
+   {
+    "group": "60-79",
+    "n": 6731,
+    "readmit_rate": 0.09686525033427425,
+    "mean_predicted": 0.09474206161248448,
+    "roc_auc": 0.6416429587123327
+   },
+   {
+    "group": "40-59",
+    "n": 3818,
+    "readmit_rate": 0.07569408067050812,
+    "mean_predicted": 0.07316241728902861,
+    "roc_auc": 0.6504317660589813
+   },
+   {
+    "group": "80+",
+    "n": 2570,
+    "readmit_rate": 0.10155642023346304,
+    "mean_predicted": 0.1069453846685222,
+    "roc_auc": 0.6394933037306956
+   },
+   {
+    "group": "<40",
+    "n": 879,
+    "readmit_rate": 0.06257110352673492,
+    "mean_predicted": 0.06589561259234128,
+    "roc_auc": 0.7272727272727272
+   }
+  ],
+  "gender": [
+   {
+    "group": "Female",
+    "n": 7507,
+    "readmit_rate": 0.08845077927267883,
+    "mean_predicted": 0.09049577481132386,
+    "roc_auc": 0.6584602328648218
+   },
+   {
+    "group": "Male",
+    "n": 6491,
+    "readmit_rate": 0.09135726390386689,
+    "mean_predicted": 0.08788522977681504,
+    "roc_auc": 0.6498737388899658
+   }
+  ],
+  "race": [
+   {
+    "group": "Caucasian",
+    "n": 10522,
+    "readmit_rate": 0.09066717354115188,
+    "mean_predicted": 0.0912861639489954,
+    "roc_auc": 0.6467894707550675
+   },
+   {
+    "group": "AfricanAmerican",
+    "n": 2504,
+    "readmit_rate": 0.09225239616613419,
+    "mean_predicted": 0.08437077493383598,
+    "roc_auc": 0.6630223420808552
+   },
+   {
+    "group": "Missing",
+    "n": 361,
+    "readmit_rate": 0.060941828254847646,
+    "mean_predicted": 0.0798826855153402,
+    "roc_auc": 0.6827567712523465
+   }
+  ]
+ },
+ "compact_model": {
+  "features": [
+   "age_years",
+   "time_in_hospital",
+   "num_medications",
+   "number_diagnoses",
+   "number_inpatient",
+   "number_emergency",
+   "number_outpatient",
+   "discharge_group",
+   "admission_source_group",
+   "diag_1_group",
+   "A1Cresult",
+   "insulin",
+   "diabetesMed"
+  ],
+  "test": {
+   "roc_auc": 0.6445859703984349,
+   "pr_auc": 0.1653025356256914,
+   "brier": 0.07951677856249025,
+   "log_loss": 0.2903324856953062,
+   "base_rate": 0.08979854264894985,
+   "mean_predicted": 0.089338260523282
+  }
+ },
+ "lr_top_effects": [
+  {
+   "feature": "discharge_disposition_id",
+   "level": "22: Discharged/transferred to another rehab fac including rehab units of a hospital .",
+   "odds_ratio": 2.469315071262017
+  },
+  {
+   "feature": "discharge_disposition_id",
+   "level": "23: Discharged/transferred to a long term care hospital.",
+   "odds_ratio": 0.4096615983702509
+  },
+  {
+   "feature": "discharge_disposition_id",
+   "level": "25: Not Mapped",
+   "odds_ratio": 0.46316078956099854
+  },
+  {
+   "feature": "discharge_disposition_id",
+   "level": "28: Discharged/transferred/referred to a psychiatric hospital of psychiatric distinct part unit of a hospital",
+   "odds_ratio": 1.8770196511763975
+  },
+  {
+   "feature": "discharge_disposition_id",
+   "level": "5: Discharged/transferred to another type of inpatient care institution",
+   "odds_ratio": 1.82575052332974
+  },
+  {
+   "feature": "discharge_disposition_id",
+   "level": "1: Discharged to home",
+   "odds_ratio": 0.5611612569277247
+  },
+  {
+   "feature": "discharge_disposition_id",
+   "level": "15: Discharged/transferred within this institution to Medicare approved swing bed",
+   "odds_ratio": 1.664447489585761
+  },
+  {
+   "feature": "medical_specialty",
+   "level": "Orthopedics-Reconstructive",
+   "odds_ratio": 0.6752512106161533
+  },
+  {
+   "feature": "diag_2_group",
+   "level": "Neoplasms",
+   "odds_ratio": 1.4729586202847444
+  },
+  {
+   "feature": "admission_source_id",
+   "level": "3: HMO Referral",
+   "odds_ratio": 1.4367143235868214
+  },
+  {
+   "feature": "repaglinide",
+   "level": "Up",
+   "odds_ratio": 1.4018951790209901
+  },
+  {
+   "feature": "medical_specialty",
+   "level": "Nephrology",
+   "odds_ratio": 1.3976739548150525
+  }
+ ],
+ "eda": {
+  "base_rate": 0.08980239187277637,
+  "rows": 69987,
+  "missing_raw": {
+   "weight": 0.9685847925633315,
+   "medical_specialty": 0.49082208203132677,
+   "payer_code": 0.395574160328597,
+   "race": 0.022335554114340742,
+   "diag_3": 0.013983059174970029,
+   "diag_2": 0.0035178743391702533,
+   "diag_1": 0.0002063557573256294
+  },
+  "by_prior_inpatient": {
+   "0": {
+    "rate": 0.08128883997928535,
+    "n": 61792
+   },
+   "1": {
+    "rate": 0.12883753018282165,
+    "n": 5798
+   },
+   "2": {
+    "rate": 0.18520986009327114,
+    "n": 1501
+   },
+   "3": {
+    "rate": 0.23758099352051837,
+    "n": 463
+   },
+   "4+": {
+    "rate": 0.29330254041570436,
+    "n": 433
+   }
+  },
+  "by_age": {
+   "<40": {
+    "rate": 0.06666666666666667,
+    "n": 4500
+   },
+   "40-59": {
+    "rate": 0.07226654152979822,
+    "n": 19179
+   },
+   "60-79": {
+    "rate": 0.09665938929927924,
+    "n": 33437
+   },
+   "80+": {
+    "rate": 0.10620775386527853,
+    "n": 12871
+   }
+  },
+  "by_a1c": {
+   "Measured": {
+    "rate": 0.08399501790440604,
+    "n": 12846
+   },
+   "Not measured": {
+    "rate": 0.09110796100873278,
+    "n": 57141
+   }
+  },
+  "by_discharge": {
+   "Home": {
+    "rate": 0.06947202166064982,
+    "n": 44320
+   },
+   "Nursing or care facility": {
+    "rate": 0.12945825101382968,
+    "n": 9617
+   },
+   "Home with health service": {
+    "rate": 0.09540889526542325,
+    "n": 8364
+   },
+   "Rehab or other hospital": {
+    "rate": 0.2056542406805104,
+    "n": 3997
+   },
+   "Other or unknown": {
+    "rate": 0.09207317073170732,
+    "n": 3280
+   },
+   "Left against medical advice": {
+    "rate": 0.09535452322738386,
+    "n": 409
+   }
+  }
+ },
+ "seconds": 77.8
+}
