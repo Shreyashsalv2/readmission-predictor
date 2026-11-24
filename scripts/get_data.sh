@@ -14,4 +14,5 @@ if [ ! -f "$OUT/diabetic_data.csv" ]; then
   find "$OUT" -mindepth 2 -name '*.csv' -exec mv {} "$OUT"/ \;
   rm -f "$OUT/dataset.zip"
 fi
+ls -la "$OUT"
 wc -l "$OUT/diabetic_data.csv"

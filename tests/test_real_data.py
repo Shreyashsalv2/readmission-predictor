@@ -30,6 +30,8 @@ def test_cleaning_on_real_data(raw):
 
 def test_ids_mapping_groups(raw):
     """The discharge and admission-source groups use ids that exist in IDs_mapping.csv."""
-    m = (CSV.parent / "IDs_mapping.csv").read_text()
+    files = [f for f in CSV.parent.glob("*.csv") if f.name.lower() == "ids_mapping.csv"]
+    assert files, f"IDs_mapping.csv not found in {sorted(p.name for p in CSV.parent.iterdir())}"
+    m = files[0].read_text().replace("\r\n", "\n")
     for i in list(D.DISCHARGE_GROUPS) + list(D.ADMISSION_SOURCE_GROUPS):
         assert f"\n{i}," in m
