@@ -1,0 +1,157 @@
+{
+ "intercept": -2.2471027128116825,
+ "numeric": [
+  {
+   "name": "age_years",
+   "mean": 65.41722481201664,
+   "scale": 16.000708621490787,
+   "coef": 0.08015297357151241
+  },
+  {
+   "name": "time_in_hospital",
+   "mean": 4.275893479076247,
+   "scale": 2.933099004698036,
+   "coef": 0.08169649189479024
+  },
+  {
+   "name": "num_medications",
+   "mean": 15.672632124167247,
+   "scale": 8.297729949627948,
+   "coef": 0.00027314518497195916
+  },
+  {
+   "name": "number_diagnoses",
+   "mean": 7.2219543124542325,
+   "scale": 2.0047220228278184,
+   "coef": 0.0504640559182068
+  },
+  {
+   "name": "number_inpatient",
+   "mean": 0.17655253710550287,
+   "scale": 0.6023431799629769,
+   "coef": 0.20326932313564872
+  },
+  {
+   "name": "number_emergency",
+   "mean": 0.10332386718819768,
+   "scale": 0.49598346429596823,
+   "coef": 0.048595177723345734
+  },
+  {
+   "name": "number_outpatient",
+   "mean": 0.2787333226169426,
+   "scale": 1.0540932969577084,
+   "coef": -0.0015220730426376812
+  }
+ ],
+ "categorical": [
+  {
+   "name": "discharge_group",
+   "categories": [
+    "Home",
+    "Home with health service",
+    "Left against medical advice",
+    "Nursing or care facility",
+    "Other or unknown",
+    "Rehab or other hospital"
+   ],
+   "coefs": [
+    -0.4605059854036654,
+    -0.2224404751650983,
+    0.0015937865842199864,
+    0.0836050256116839,
+    -0.09831059133306494,
+    0.6793879393112512
+   ]
+  },
+  {
+   "name": "admission_source_group",
+   "categories": [
+    "Emergency room",
+    "Other or unknown",
+    "Referral",
+    "Transfer"
+   ],
+   "coefs": [
+    0.049464089911932144,
+    -0.00994306101240287,
+    0.07418946161341729,
+    -0.13038079090758356
+   ]
+  },
+  {
+   "name": "diag_1_group",
+   "categories": [
+    "Circulatory",
+    "Diabetes",
+    "Digestive",
+    "Genitourinary",
+    "Injury",
+    "Missing",
+    "Musculoskeletal",
+    "Neoplasms",
+    "Other",
+    "Respiratory"
+   ],
+   "coefs": [
+    0.08938946716954158,
+    0.10678571225547928,
+    -6.564845155064406e-05,
+    0.014314382512986506,
+    -0.028233327527686106,
+    0.1946145766905483,
+    -0.19675525929105,
+    0.008298570743811101,
+    -0.04019301232291919,
+    -0.16482576217383096
+   ]
+  },
+  {
+   "name": "A1Cresult",
+   "categories": [
+    ">7",
+    ">8",
+    "Norm",
+    "Not measured"
+   ],
+   "coefs": [
+    -0.03290425866884833,
+    -0.04055514980804986,
+    -0.01721229527019301,
+    0.07400140335247277
+   ]
+  },
+  {
+   "name": "insulin",
+   "categories": [
+    "Down",
+    "No",
+    "Steady",
+    "Up"
+   ],
+   "coefs": [
+    0.08676017344562276,
+    -0.036689032175344485,
+    -0.048713352494147134,
+    -0.018028089170750772
+   ]
+  },
+  {
+   "name": "diabetesMed",
+   "categories": [
+    "No",
+    "Yes"
+   ],
+   "coefs": [
+    -0.10681149692646992,
+    0.09014119653198178
+   ]
+  }
+ ],
+ "meta": {
+  "test_roc_auc": 0.6445859703984349,
+  "base_rate": 0.08980335423029524,
+  "C": 0.1,
+  "trained_on": 55989
+ }
+}

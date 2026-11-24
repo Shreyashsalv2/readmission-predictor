@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>readmission-predictor · 30-day hospital readmission · Shreyash Singh Salv</title>
+<meta name="description" content="Predicting 30-day readmission for 69,987 diabetic patients with pandas and scikit-learn: test ROC-AUC 0.654, honest evaluation and an in-browser risk calculator.">
+<style>
+:root{--b:#0B3C5D;--b2:#1D6FA3;--l:#EEF4F9;--t:#1B1B1B;--m:#5c6670}*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--t);line-height:1.55}
+header{background:var(--b);color:#fff;padding:52px 20px 40px}.w{max-width:1000px;margin:0 auto;padding:0 20px}
+h1{font-size:clamp(28px,4.2vw,42px);line-height:1.15;margin:0 0 12px}h2{color:var(--b);font-size:24px;margin:0 0 14px}
+header p{color:#CFE3F3;font-size:18px;max-width:800px;margin:0 0 20px}.btns a{display:inline-block;margin:6px 10px 0 0;padding:10px 16px;border-radius:8px;background:#fff;color:var(--b);font-weight:700;text-decoration:none}
+section{padding:36px 0;border-bottom:1px solid #e3eaf0}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.stat{background:var(--l);border-radius:12px;padding:16px}.stat b{display:block;font-size:30px;color:var(--b)}.stat span{display:block;font-weight:700}.stat small{color:var(--m)}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid #e1e7ec}.muted{color:var(--m);font-size:14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;align-items:start}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid #e3eaf0}th{background:var(--l)}
+.scroll{overflow-x:auto}code{background:var(--l);padding:1px 5px;border-radius:4px}a{color:var(--b2)}
+.calc{display:grid;grid-template-columns:minmax(150px,1fr) minmax(140px,1fr);gap:8px 12px;align-items:center}
+.calc input,.calc select{padding:7px;border:1px solid #c9d6e2;border-radius:6px;font:inherit;width:100%}
+.calc-out{background:var(--l);border-radius:12px;padding:18px;margin-top:4px}.risk{font-size:44px;font-weight:800;color:var(--b)}.risk-sub{color:var(--m)}
+.note{border-left:4px solid #d9822b;background:#fff7ee;padding:10px 14px;border-radius:6px;font-size:14px}
+footer{padding:28px 0 46px;color:var(--m);font-size:14px}
+</style></head><body>
+<header><div class="w"><h1>Which diabetic patients come back within 30 days?</h1>
+<p>Cleaning 101,766 hospital encounters with pandas, comparing scikit-learn models with cross-validation, and checking the winner on held-out patients: ranking, calibration and fairness across groups. Plus a risk calculator that runs in your browser.</p>
+<div class="btns"><a href="#calculator">Try the calculator</a><a href="https://github.com/Shreyashsalv2/readmission-predictor" target="_blank" rel="noopener">Code on GitHub ↗</a><a href="https://github.com/Shreyashsalv2/readmission-predictor/blob/main/results/FINDINGS.md" target="_blank" rel="noopener">Findings report ↗</a></div></div></header>
+<main class="w">
+<section><h2>Results on 13,998 held-out patients</h2><div class="stats"><div class='stat'><b>0.654</b><span>Test ROC-AUC</span><small>gradient boosting, 95% CI 0.639–0.670</small></div><div class='stat'><b>24%</b><span>Readmissions in the top 10%</span><small>flagging the riskiest 10% catches this share; 2.4× the average rate</small></div><div class='stat'><b>9.0%</b><span>Readmitted within 30 days</span><small>of 69,987 patients after cleaning</small></div><div class='stat'><b>0.0787</b><span>Brier score</span><small>calibration + sharpness; always-average baseline 0.0817</small></div></div>
+<p class="muted">Data: Diabetes 130-US Hospitals 1999–2008 (UCI, CC BY 4.0). The model was chosen on 5-fold cross-validation over 55,989 training patients; the test set was used once.</p></section>
+<section class="two"><div><h2>What the data says</h2><img src="eda_inpatient.png" alt="Readmission rate rises with the number of inpatient visits in the prior year">
+<p class="muted">Patients with no inpatient stay in the prior year were readmitted 8.1% of the time; with 4 or more, 29.3%.</p></div>
+<div><h2>&nbsp;</h2><img src="eda_discharge.png" alt="Readmission rate by discharge destination"></div></section>
+<section><h2>Model comparison</h2><div class="scroll"><table><tr><th>Model</th><th>CV ROC-AUC (mean ± sd)</th><th>Test ROC-AUC</th><th>Test PR-AUC</th><th>Brier</th><th>Caught in top 10%</th></tr><tr><td>Baseline (always the average rate)</td><td>0.500 ± 0.000</td><td>0.500</td><td>0.090</td><td>0.0817</td><td>10%</td></tr><tr><td>Logistic regression</td><td>0.645 ± 0.004</td><td>0.648</td><td>0.169</td><td>0.0793</td><td>23%</td></tr><tr><td>Gradient boosting</td><td>0.655 ± 0.006</td><td>0.654</td><td>0.186</td><td>0.0787</td><td>24%</td></tr></table></div>
+<p class="muted">PR-AUC matters here because only 9.0% of patients are readmitted: an uninformed model scores 0.090. Logistic regression's strength was picked by cross-validation (C = 0.1).</p>
+<div class="two" style="margin-top:16px"><img src="roc.png" alt="ROC curves for the baseline, logistic regression and gradient boosting"><img src="calibration.png" alt="Calibration: predicted risk against observed readmission rate by decile"></div></section>
+<section class="two"><div><h2>Strongest signals</h2><p class="muted">Logistic regression odds ratios: per standard deviation for numbers, per category relative to the average category.</p>
+<div class="scroll"><table><tr><th>Feature</th><th>Level</th><th>Odds ratio</th></tr><tr><td>Discharge disposition id</td><td>22: Discharged/transferred to another rehab fac including rehab units of a hospital .</td><td>2.47</td></tr><tr><td>Discharge disposition id</td><td>23: Discharged/transferred to a long term care hospital.</td><td>0.41</td></tr><tr><td>Discharge disposition id</td><td>25: Not Mapped</td><td>0.46</td></tr><tr><td>Discharge disposition id</td><td>28: Discharged/transferred/referred to a psychiatric hospital of psychiatric distinct part unit of a hospital</td><td>1.88</td></tr><tr><td>Discharge disposition id</td><td>5: Discharged/transferred to another type of inpatient care institution</td><td>1.83</td></tr><tr><td>Discharge disposition id</td><td>1: Discharged to home</td><td>0.56</td></tr><tr><td>Discharge disposition id</td><td>15: Discharged/transferred within this institution to Medicare approved swing bed</td><td>1.66</td></tr><tr><td>Admitting specialty</td><td>Orthopedics-Reconstructive</td><td>0.68</td></tr><tr><td>Second diagnosis</td><td>Neoplasms</td><td>1.47</td></tr><tr><td>Admission source id</td><td>3: HMO Referral</td><td>1.44</td></tr></table></div></div>
+<div><h2>Does it work equally well for everyone?</h2><p class="muted">Gradient boosting on the test set, by group (groups under 300 patients skipped).</p>
+<div class="scroll"><table><tr><th></th><th>Group</th><th>n</th><th>Observed</th><th>Predicted</th><th>ROC-AUC</th></tr><tr><td>age</td><td>60-79</td><td>6,731</td><td>9.7%</td><td>9.5%</td><td>0.642</td></tr><tr><td>age</td><td>40-59</td><td>3,818</td><td>7.6%</td><td>7.3%</td><td>0.650</td></tr><tr><td>age</td><td>80+</td><td>2,570</td><td>10.2%</td><td>10.7%</td><td>0.639</td></tr><tr><td>age</td><td>&lt;40</td><td>879</td><td>6.3%</td><td>6.6%</td><td>0.727</td></tr><tr><td>gender</td><td>Female</td><td>7,507</td><td>8.8%</td><td>9.0%</td><td>0.658</td></tr><tr><td>gender</td><td>Male</td><td>6,491</td><td>9.1%</td><td>8.8%</td><td>0.650</td></tr><tr><td>race</td><td>Caucasian</td><td>10,522</td><td>9.1%</td><td>9.1%</td><td>0.647</td></tr><tr><td>race</td><td>AfricanAmerican</td><td>2,504</td><td>9.2%</td><td>8.4%</td><td>0.663</td></tr><tr><td>race</td><td>Missing</td><td>361</td><td>6.1%</td><td>8.0%</td><td>0.683</td></tr></table></div></div></section>
+<section id="calculator"><h2>Risk calculator</h2>
+<p class="muted">A compact logistic regression on 13 inputs (test ROC-AUC 0.645), exported from scikit-learn to JSON and scored in JavaScript; tests check it matches scikit-learn to 12 decimal places.</p>
+<div class="two"><div id="calc-root"></div><div class="note"><b>Not for clinical use.</b> A demonstration on 1999–2008 US hospital records. It ranks risk modestly well and is not a diagnosis; real deployment would need recent local data, clinical review and prospective validation.</div></div></section>
+<section><h2>How the data was cleaned</h2><div class="two"><div class="scroll"><table><tr><th>Step</th><th>Rows left</th></tr><tr><td>raw encounters</td><td>101,766</td></tr><tr><td>drop unknown gender</td><td>101,763</td></tr><tr><td>drop expired / hospice discharges</td><td>99,340</td></tr><tr><td>keep first encounter per patient</td><td>69,987</td></tr></table></div>
+<ul><li>'?' read as missing; lab results of 'None' kept as <i>not measured</i>, since whether a test was ordered is itself informative.</li>
+<li>Expired and hospice discharges removed: those patients cannot be readmitted.</li>
+<li>One encounter per patient (the first), so no patient sits in both training and test data.</li>
+<li>ICD-9 diagnosis codes grouped into 9 disease groups; specialties capped at the top 10.</li>
+<li>Dropped: weight (about 97% missing), payer code, identifiers, and constant columns (examide, citoglipton, glimepiride-pioglitazone).</li></ul></div></section>
+<section><h2>Limits</h2><p>Readmission is hard to predict from administrative records alone: the model ranks patients better than chance but misses many readmissions, and the data is from 1999–2008. Social factors, follow-up care and lab values beyond HbA1c and glucose aren't in the dataset.</p></section>
+</main>
+<footer class="w">Built by Shreyash Singh Salv · <a href="https://github.com/Shreyashsalv2" target="_blank" rel="noopener">github.com/Shreyashsalv2</a> · Data: Strack et al. (2014), UCI Machine Learning Repository, CC BY 4.0</footer>
+<script src="calculator.js"></script>
+<script>fetch("model.json").then(r => r.json()).then(m => buildCalculator(m, document.getElementById("calc-root")));</script>
+</body></html>
