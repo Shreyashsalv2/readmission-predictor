@@ -45,9 +45,8 @@ def eda(raw: pd.DataFrame, c: D.Cleaned, out: Path) -> dict:
     gt = y.groupby(a1c).agg(["mean", "size"])
 
     disc = y.groupby(df["discharge_group"]).agg(["mean", "size"]).sort_values("size", ascending=False)
-    plots.rate_bars([s.replace(" or ", "/\n").replace(" with ", "\n+ ") for s in disc.index], disc["mean"].tolist(),
-                    disc["size"].astype(int).tolist(), "Readmission rate by where the patient went",
-                    "Discharge destination", base, out / "eda_discharge.png")
+    plots.rate_barh(list(disc.index), disc["mean"].tolist(), disc["size"].astype(int).tolist(),
+                    "Readmission rate by discharge destination", base, out / "eda_discharge.png")
 
     as_dict = lambda t: {str(k): {"rate": float(r["mean"]), "n": int(r["size"])} for k, r in t.iterrows()}  # noqa: E731
     return {"base_rate": base, "rows": int(len(df)), "missing_raw": missing,

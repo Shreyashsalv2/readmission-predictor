@@ -64,3 +64,23 @@ def rate_bars(labels: list[str], rates: list[float], counts: list[int], title: s
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
+
+
+def rate_barh(labels: list[str], rates: list[float], counts: list[int], title: str,
+              base_rate: float, path: Path) -> None:
+    """Horizontal version for long category names (sorted top to bottom as given)."""
+    fig, ax = plt.subplots(figsize=(5.6, 0.5 * len(labels) + 1.3), dpi=150)
+    y = np.arange(len(labels))[::-1]
+    ax.barh(y, [r * 100 for r in rates], color="#2a6fdb", height=0.6)
+    for yy, r, n in zip(y, rates, counts):
+        ax.text(r * 100 + 0.3, yy, f"{r:.1%}  (n={n:,})", va="center", fontsize=7.5, color="#444")
+    ax.set_yticks(y, labels, fontsize=8)
+    ax.axvline(base_rate * 100, ls=":", color="#d9822b", lw=1.2, label=f"overall {base_rate:.1%}")
+    ax.set_xlabel("Readmitted within 30 days (%)")
+    ax.set_xlim(0, max(rates) * 100 * 1.45)
+    ax.set_title(title, fontsize=10)
+    ax.legend(fontsize=7.5, frameon=False, loc="lower right")
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
