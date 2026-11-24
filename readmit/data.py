@@ -92,6 +92,34 @@ def age_midpoint(bracket: str) -> float:
     return (float(lo) + float(hi)) / 2
 
 
+ID_COLUMNS = ("admission_type_id", "discharge_disposition_id", "admission_source_id")
+
+
+def find_id_mapping(data_dir: str | Path) -> Path | None:
+    """IDs_mapping.csv ships with the dataset (its case varies between releases)."""
+    for f in Path(data_dir).glob("*.csv"):
+        if f.name.lower() == "ids_mapping.csv":
+            return f
+    return None
+
+
+def load_id_maps(path: str | Path) -> dict[str, dict[str, str]]:
+    """Parse IDs_mapping.csv: three 'id,description' tables separated by blank lines."""
+    maps: dict[str, dict[str, str]] = {}
+    current = None
+    for line in Path(path).read_text().replace("\r\n", "\n").split("\n"):
+        if not line.strip() or line.strip() == ",":
+            current = None
+            continue
+        key, _, desc = line.partition(",")
+        if key in ID_COLUMNS:
+            current = key
+            maps[current] = {}
+        elif current:
+            maps[current][key.strip()] = desc.strip().strip('"')
+    return maps
+
+
 def load_raw(path: str | Path) -> pd.DataFrame:
     """Read the CSV with '?' as missing; keep strings like 'None' as values."""
     return pd.read_csv(path, na_values=["?"], keep_default_na=False, low_memory=False)

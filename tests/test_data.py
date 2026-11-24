@@ -68,3 +68,15 @@ def test_target_is_only_under_30_days():
 def test_specialties_are_capped(raw_csv):
     c = D.clean(D.load_raw(raw_csv))
     assert c.df["medical_specialty"].nunique() <= D.TOP_SPECIALTIES + 2
+
+
+def test_id_mapping_parser(tmp_path):
+    f = tmp_path / "IDS_mapping.csv"
+    f.write_text("admission_type_id,description\r\n1,Emergency\r\n2,Urgent\r\n,\r\n"
+                 "discharge_disposition_id,description\r\n1,Discharged to home\r\n22,\"Discharged/transferred to another rehab fac\"\r\n,\r\n"
+                 "admission_source_id,description\r\n7, Emergency Room\r\n")
+    assert D.find_id_mapping(tmp_path) == f
+    m = D.load_id_maps(f)
+    assert m["admission_type_id"] == {"1": "Emergency", "2": "Urgent"}
+    assert m["discharge_disposition_id"]["22"] == "Discharged/transferred to another rehab fac"
+    assert m["admission_source_id"]["7"] == "Emergency Room"

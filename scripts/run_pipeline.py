@@ -126,6 +126,13 @@ def main() -> int:
 
     full_lr = models.all_models(num, cat, SEED, best_C)["Logistic regression"].fit(Xtr, ytr)
     effects = export.top_effects(export.to_json(full_lr, num, cat), 12)
+    id_file = D.find_id_mapping(Path(a.data).parent)
+    if id_file:
+        maps = D.load_id_maps(id_file)
+        (out / "ids_mapping.json").write_text(json.dumps(maps, indent=1))
+        for e in effects:
+            if e["feature"] in maps and e["level"] in maps[e["feature"]]:
+                e["level"] = f"{e['level']}: {maps[e['feature']][e['level']]}"
 
     plots.roc(curves, {k: results[k]["test"]["roc_auc"] for k in results}, out / "roc.png")
     plots.calibration({k: results[k]["calibration"] for k in real}, out / "calibration.png")
